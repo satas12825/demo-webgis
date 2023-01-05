@@ -1,0 +1,8 @@
+#map { height: 600px; }
+
+.legend>div {
+    background: whitesmoke !important;
+    padding: 5px;
+    width: 300px;
+  }
+
