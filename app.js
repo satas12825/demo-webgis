@@ -24,26 +24,62 @@ legend: true,
 transparent: true,
 }).addTo(map)
 
+let layer2 = L.tileLayer.wms("http://localhost:8080/geoserver/nurc/wms?", {
+layers: 'nurc:Img_Sample',
+format: 'image/png',
+legend: true,
+transparent: true,
+})
 
 
 
-// get graphiclagend
-let legend = L.control.attribution({ position: "bottomright" });
-legend.onAdd = function (map) {
-    var div = L.DomUtil.create("div", "info legend");
 
-    div.innerHTML = ` <img src="http://localhost:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=topp:states" class="overlay" alt="" srcset="">
-    `
-    return div;
-  };
-  legend.addTo(map)
+
 
   var baseMaps = {
     "แผนที&osm": osm
   };
 
   var overlayMaps = {
-    "เลเยอร์": layer.addTo(map)
+    "เลเยอร์": layer,
+    "เลเยอร์2": layer2
  };
-  L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+ map.on('overlayadd', onOverlayAdd);
+
+function onOverlayAdd(e){
+    //do whatever
+    console.log(e.layer.options.layers);
+    layer_name = e.layer.options.layers
+    console.log(layer_name);
+    layerChange()
+
+}
+
+
+
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+
+  // get graphiclagend
+var layer_name = 'topp:states'
+let legend = L.control.attribution({ position: "bottomright" });
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create("div", "info legend");
+
+    div.innerHTML = ` <img src="http://localhost:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=${layer_name}" class="overlay" alt="" srcset="">
+    `
+    return div;
+  };
+  legend.addTo(map)
+
+function layerChange(){
+  legend.onAdd = function (map) {
+    var div = L.DomUtil.create("div", "info legend");
+
+    div.innerHTML = ` <img src="http://localhost:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=${layer_name}" class="overlay" alt="" srcset="">
+    `
+    return div;
+  };
+  legend.addTo(map)
+}
